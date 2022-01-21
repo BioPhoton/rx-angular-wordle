@@ -1,157 +1,20 @@
-<ng-container *rxLet="viewState$; let vs">
-  <ui-side-drawer
-    *rxLet="[]"
-    [opened]="vs.sideDrawerOpen"
-    (openedChange)="ui.sideDrawerOpenToggle(false)"
-  >
-    <a class="navigation-header" href='/'>
-      <picture>
-        <img
-          class="logo-img"
-          src='/assets/svgs/logo.svg'
-          title="HubMovies"
-          alt="HubMovies"
-          width="150"
-          height="150"
-        />
-      </picture>
-    </a>
-    <nav class="navigation" *rxLet="[]">
-      <h3 class="navigation--headline">Discover</h3>
-      <a
-        data-test="link-category-popular"
-        class="navigation--link"
-        [routerLink]="['/list', 'category', 'popular']"
-        routerLinkActive="active"
-      >
-        <div class="navigation--menu-item">
-          <svg
-            class="navigation--menu-item-icon"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path d="M0 0h24v24H0V0z" fill="none" />
-            <path
-              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-            />
-          </svg>
-          Popular
-        </div>
-      </a>
-      <a
-        data-test="sidebar-nav-link-category-top_rated"
-        class="navigation--link"
-        [routerLink]="['/list', 'category', 'top_rated']"
-        routerLinkActive="active"
-      >
-        <div class="navigation--menu-item">
-          <svg
-            class="navigation--menu-item-icon"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path d="M0 0h24v24H0z" fill="none" />
-            <path
-              d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"
-            />
-          </svg>
-          Top Rated
-        </div>
-      </a>
-      <a
-        data-test="sidebar-nav-link-category-upcoming"
-        class="navigation--link"
-        [routerLink]="['/list', 'category', 'upcoming']"
-        routerLinkActive="active"
-      >
-        <div class="navigation--menu-item">
-          <svg
-            class="navigation--menu-item-icon"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path d="M0 0h24v24H0V0z" fill="none" />
-            <path
-              d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V10h16v11zm0-13H4V5h16v3z"
-            />
-          </svg>
-          Upcoming
-        </div>
-      </a>
-      <h3 class="navigation--headline">Genres</h3>
-      <a
-        *rxFor="
-          let genre of genres$;
-          trackBy: trackByGenre;
-          strategy: 'idle'
-        "
-        class="navigation--link"
-        [routerLink]="['/list', 'genre', genre.id]"
-        routerLinkActive="active"
-      >
-        <div class="navigation--menu-item">
-          <svg
-            class="navigation--menu-item-icon"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path d="M0 0h24v24H0V0z" fill="none" />
-            <path
-              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
-            />
-            <circle cx="12" cy="12" r="5" />
-          </svg>
-          {{ genre.name }}
-        </div>
-      </a>
-    </nav>
-    <div class="menu-footer">
-      <a
-        href="https://www.themoviedb.org/"
-        target="_blank"
-        rel="noreferrer noopener"
-      >
-        <picture class="tmdb-mark">
-          <source
-            srcset='/assets/svgs/tmdbgreen.svg'
-            media="(prefers-color-scheme: dark)"
-          />
-          <source
-            srcset='/assets/svgs/tmdb.svg'
-            media="(prefers-color-scheme: light)"
-          />
-          <img width="300" height="118" alt="The Movie Database" src="" />
-        </picture>
-      </a>
-    </div>
-  </ui-side-drawer>
-  <div class="content-wrapper">
-    <div *rxLet="[]" class="ui-toolbar">
-      <ui-hamburger-button
-        data-test="main-side-drawer-hamburger-button"
-        class="ui-toolbar--action"
-        (click)="ui.sideDrawerOpenToggle(!vs.sideDrawerOpen)"
-      >
-      </ui-hamburger-button>
-      <div class="ui-toolbar--widget-container">
-        <ui-search-bar [query]="search$" (searchSubmit)="searchMovie($event)"></ui-search-bar>
-        <ui-dark-mode-toggle></ui-dark-mode-toggle>
-        <ul class="menu account-menu" (mouseenter)="ui.loadAccountMenu()">
-          <li>
-            Account
-            <ul class="menu">
-              <!--<ng-container *rxLet="accountMenuComponent$; rxSuspense: loading" [lazy]="accountMenuComponent$">
-              </ng-container>-->
-              <ng-template #loading>
-                Loading...
-              </ng-template>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div *rxLet="[]" class="content">
-      <ng-content></ng-content>
-    </div>
+<header>
+  <div class="menu">
+      help
   </div>
-</ng-container>
+  <div class="title">
+    WORDLE
+  </div>
+  <div class="menu">
+      statistics,
+      settings
+  </div>
+</header>
+
+<div id="board-container">
+  <ui-board [boardState]="gameState.game$">
+  </ui-board>
+</div>
+
+<ui-keyboard [boardState]="gameState.game$">
+</ui-keyboard>

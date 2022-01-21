@@ -1,0 +1,26 @@
+#keyboard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.keyboard-row {
+  width: 100%;
+  display: flex;
+}
+
+button[data-key='empty'] {
+  border: 2px solid var(--color-tone-4);
+}
+
+button[data-key='present'] {
+  background-color: var(--color-present);
+}
+
+button[data-key='correct'] {
+  background-color: var(--color-correct);
+}
+
+button[data-key='absent'] {
+  background-color: var(--color-absent);
+}

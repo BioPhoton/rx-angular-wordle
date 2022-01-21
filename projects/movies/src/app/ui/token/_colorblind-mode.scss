@@ -1,0 +1,8 @@
+.colorblind {
+  --color-correct: var(--orange);
+  --color-present: var(--blue);
+  --tile-text-color: var(--white);
+  --key-bg-present: var(--color-present);
+  --key-bg-correct: var(--color-correct);
+  --key-bg-absent: var(--color-absent);
+}
