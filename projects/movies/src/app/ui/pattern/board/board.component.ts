@@ -1,37 +1,30 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RxInputType } from '../../../shared/rxa-custom/input-type.typing';
-import { Evaluation, GameStateModel } from '../../../shared/game/game.model';
+import { GameStateModel, BoardState } from '../../../shared/game/game.model';
 import { RxState } from '@rx-angular/state';
 import { coerceObservable } from '../../../shared/utils/coerceObservable';
 import { map } from 'rxjs';
 
-
-type Tile = {
-  value: string,
-  evaluation: Evaluation
-};
-type Board = Tile[];
-
 interface BoardModel {
-  board: Board
+  board: BoardState;
 }
 
 @Component({
   selector: 'ui-board',
   template: `
     <div id="board">
-      <div class="tile" [attr.data-state]="tile.evaluation" *rxFor="let tile of board$">
-        {{tile.value}}
-      </div>
-
+      <ui-board-row *rxFor="let row of board$" [state]="row"></ui-board-row>
     </div>
   `,
   styleUrls: ['./board.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [RxState]
+  providers: [RxState],
 })
 export class BoardComponent {
   board$ = this.s.select('board');
+
+  @Input()
+  public nGuesses: number = 6;
 
   @Input()
   set boardState(_: RxInputType<GameStateModel>) {
@@ -39,17 +32,20 @@ export class BoardComponent {
   }
 
   constructor(private s: RxState<BoardModel>) {
-    this.s.set({ board: getBoard({ boardState: [], evaluations: [] }) });
+    this.s.set({ board: getBoard({ guesses: [] }) });
   }
-
 }
 
-function getBoard({ boardState, evaluations }: Pick<GameStateModel, 'boardState' | 'evaluations'>): Board {
-  const tile = (value: string = '', evaluation: Evaluation): Tile => ({ value: value, evaluation });
-  const boardStateViewModel: Tile[] = boardState
-    .map(w => w.split(''))
-    .flatMap((arr, rowIdx) => arr.map((value, colIdx) => tile(value, evaluations[rowIdx][colIdx])));
-  const emptyRow = (): Tile[] => new Array(5).fill(tile('*', 'empty'));
-  const emptyTiles: Tile[] = new Array(6 - boardState.length).fill(0).flatMap(emptyRow);
-  return boardStateViewModel.concat(emptyTiles);
+function getBoard({ guesses }: Pick<GameStateModel, 'guesses'>): BoardState {
+  const board = [...guesses];
+  while (board.length < 6) {
+    board.push([
+      { letter: '', state: 'empty' },
+      { letter: '', state: 'empty' },
+      { letter: '', state: 'empty' },
+      { letter: '', state: 'empty' },
+      { letter: '', state: 'empty' },
+    ]);
+  }
+  return board;
 }

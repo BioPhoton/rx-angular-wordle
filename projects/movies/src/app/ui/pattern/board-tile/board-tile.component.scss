@@ -1,0 +1,46 @@
+:host {
+  display: inline-block;
+}
+
+.tile {
+  width: 100%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  line-height: 2rem;
+  font-weight: bold;
+  vertical-align: middle;
+  box-sizing: border-box;
+  color: var(--tile-text-color);
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.tile::before {
+  content: '';
+  display: inline-block;
+  padding-bottom: 100%;
+}
+
+.empty {
+  border: 2px solid var(--color-tone-4);
+}
+
+.present {
+  background-color: var(--color-present);
+}
+
+.correct {
+  background-color: var(--color-correct);
+}
+
+.absent {
+  background-color: var(--color-absent);
+}
+
+.tbd {
+  background-color: var(--color-tone-7);
+  border: 2px solid var(--color-tone-3);
+  color: var(--color-tone-1);
+}
