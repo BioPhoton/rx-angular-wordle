@@ -1,16 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
 import { map, Observable, Subject } from 'rxjs';
-import { GameStateModel, TileState } from '../../../shared/game/game.model';
 import { RxState } from '@rx-angular/state';
 import { GameUiInputModel } from '../internal/game-ui-input.model';
-import { BoardTileModule } from '../board-tile/board-tile.module';
+import { LetterState, LetterTile } from '../internal/letter.model';
 
-type Key = {
-  letter: string;
-  state: TileState;
-};
-
-type Keys = Key[];
+type Keys = LetterTile[];
 
 interface KeyBoardState {
   keyRows: Keys[];
@@ -22,35 +16,35 @@ interface KeyBoardState {
     <div id="keyboard" *rxLet="keyRows$; let keyRows">
       <div class="keyboard-row">
         <button
-          [attr.data-key]="k.value"
-          [attr.data-state]="k.evaluation"
+          [attr.data-key]="k.state"
+          [attr.data-state]="k.state"
           *ngFor="let k of keyRows[0]"
-          (click)="key.next(k.value)"
+          (click)="key.next(k.letter)"
         >
-          {{ k.value }}
+          {{ k.letter }}
         </button>
       </div>
       <div class="keyboard-row">
         <div class="spacer half"></div>
         <button
-          [attr.data-key]="k.value"
-          [attr.data-state]="k.evaluation"
+          [attr.data-key]="k.letter"
+          [attr.data-state]="k.state"
           *ngFor="let k of keyRows[1]"
-          (click)="key.next(k.value)"
+          (click)="key.next(k.state)"
         >
-          {{ k.value }}
+          {{ k.letter }}
         </button>
         <div class="spacer half"></div>
       </div>
       <div class="keyboard-row">
         <button [attr.data-key]="'↵'" class="one-and-a-half">enter</button>
         <button
-          [attr.data-key]="k.value"
-          [attr.data-state]="k.evaluation"
+          [attr.data-key]="k.letter"
+          [attr.data-state]="k.state"
           *ngFor="let k of keyRows[2]"
-          (click)="key.next(k.value)"
+          (click)="key.next(k.letter)"
         >
-          {{ k.value }}
+          {{ k.letter }}
         </button>
         <button [attr.data-key]="'←'" class="one-and-a-half">
           <ui-icon icon="backspace"></ui-icon>
@@ -79,29 +73,34 @@ const keyboardRow1 = 'qwertyuiop'.split('');
 const keyboardRow2 = 'asdfghhjkl'.split('');
 const keyboardRow3 = 'zxcvbnm'.split('');
 const keys = [...keyboardRow1, ...keyboardRow2, ...keyboardRow3];
-const ENTER: Tile = { letter: 'ENTER', state: 'empty' };
-const BACK = { letter: 'BACK', state: 'empty' as TileState };
+// const ENTER: LetterTile = { letter: 'ENTER', state: 'empty' };
+// const BACK: LetterTile = { letter: 'BACK', state: 'empty' };
 
-function getKeyBoardState({ guesses }: GameStateModel): Keys[] {
-  const keysMap: Record<string, TileState> = keys.reduce(
-    (map, value) => ({
+function getKeyBoardState({ boardState, evaluations }: GameUiInputModel): Keys[] {
+  const keysMap: Record<string, LetterState> = keys.reduce(
+    (map, letter) => ({
       ...map,
-      [value]: 'empty'
+      [letter]: 'empty'
     }),
     {}
   );
-  guesses.forEach((row: string[]) =>
-    row.forEach((tile: Key) => {
-      keysMap[tile.letter] = tile.state;
-    })
+
+  evaluations.forEach((row, rowIdx) => {
+      row.forEach((state, letterIdx) => {
+        console.log(boardState[rowIdx][letterIdx], state);
+        keysMap[boardState[rowIdx][letterIdx]] = state;
+      });
+    }
   );
-  const allKeys = Object.entries(keysMap).map(([value, evaluation]) => ({
-    value,
-    evaluation
+
+  const allKeys = Object.entries(keysMap).map(([letter, state]) => ({
+    letter,
+    state
   }));
+
   return [
     allKeys.splice(0, keyboardRow1.length),
-    [ENTER].concat(allKeys.splice(0, keyboardRow2.length)).concat(BACK),
+    allKeys.splice(0, keyboardRow2.length),
     allKeys.splice(0, keyboardRow3.length)
   ];
 }

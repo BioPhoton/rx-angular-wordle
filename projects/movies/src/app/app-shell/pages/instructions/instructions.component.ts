@@ -3,7 +3,7 @@ import {
   Component,
   ViewEncapsulation,
 } from '@angular/core';
-import { RowState } from '../../../shared/game/game.model';
+import { RowState } from '../../../ui/pattern/board/board.model';
 
 @Component({
   selector: 'app-instructions',

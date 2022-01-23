@@ -12,5 +12,5 @@ export interface ServerGameModel {
   lastPlayedTs: number;
   lastCompletedTs: number;
   restoringFromLocalStorage: number;
-  hardMode: number;
+  hardMode: boolean;
 }

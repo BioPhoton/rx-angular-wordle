@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PageModule } from '../../../ui/component/page/page.module';
-import { BoardRowModule } from '../../../ui/pattern/board-row/board-row.module';
+import { BoardRowModule } from '../../../ui/pattern/board/board-row/board-row.module';
 import { InstructionsComponent } from './instructions.component';
 
 @NgModule({

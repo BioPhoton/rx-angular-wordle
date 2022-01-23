@@ -1,20 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RxState, selectSlice } from '@rx-angular/state';
 import { getGame } from '../shared/game-resource/game.resource';
-import { GameStatus, Word } from '../shared/game-resource/server-game.model';
-import { filter, map, Subject, withLatestFrom } from 'rxjs';
-import { BoardState } from './app-shell.model';
+import { ServerGameModel } from '../shared/game-resource/server-game.model';
+import { filter, Subject, withLatestFrom } from 'rxjs';
 
 // the browser model includes the current try
-interface BrowserGameModel {
-  guesses: BoardState;
-  solution: Word;
-  gameStatus: GameStatus;
-  // local JavaScript time stamp of last played e.g. 1642732127592
-  lastPlayedTs: number;
-  // local JavaScript time stamp of last completed game e.g. 1642732127543
-  lastCompletedTs: number;
-  hardMode: number;
+interface BrowserGameModel extends ServerGameModel {
 }
 
 @Component({
@@ -26,23 +17,22 @@ interface BrowserGameModel {
 export class AppShellComponent extends RxState<{
   showInstructions: boolean;
   showSettings: boolean;
-  game: BrowserGameModel
-}> {
-  public uiInput$ = this.select(map(s => s.game), selectSlice(['guesses']));
+} & BrowserGameModel> {
+  public uiInput$ = this.select(selectSlice(['boardState', 'evaluations']));
   public keyboardOutput$ = new Subject<string>();
   public back$ = this.keyboardOutput$.pipe(filter(k => k === 'BACK'));
   public enter$ = this.keyboardOutput$.pipe(filter(k => k === 'ENTER'));
   public character$ = this.keyboardOutput$.pipe(filter(k => k !== 'BACK' && k !== 'ENTER'));
 
-  public rowIndex$ = this.select(map(s => s.game));
+  public rowIndex$ = this.select('rowIndex');
 
   public showInstructions$ = this.select('showInstructions');
   public showSettings$ = this.select('showSettings');
 
-  constructor(public gameState:) {
+  constructor() {
     super();
     this.set({ showInstructions: false, showSettings: false });
-    this.connect('game', getGame());
+    this.connect(getGame());
     this.character$.pipe(
       withLatestFrom()
     );
@@ -50,7 +40,7 @@ export class AppShellComponent extends RxState<{
     this.connect(
       'boardState',
       this.character$,
-      (({ gu, rowIndex }, char) => {
+      (({ boardState, rowIndex }, char) => {
         const wordIndex: number = rowIndex - 1;
         const currentWord: string = boardState[wordIndex] || '';
         console.log('character$: ', char, currentWord, rowIndex, boardState);
@@ -92,3 +82,4 @@ export class AppShellComponent extends RxState<{
     this.set({ showSettings: false });
   }
 }
+

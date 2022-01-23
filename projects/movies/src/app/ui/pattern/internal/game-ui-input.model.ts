@@ -1,9 +1,3 @@
-import { Word } from '../../../shared/game-resource/server-game.model';
-import { BoardState } from '../../../app-shell/app-shell.model';
+import { ServerGameModel } from '../../../shared/game-resource/server-game.model';
 
-export type TileState = 'absent' | 'present' | 'correct' | 'empty' | 'tbd';
-export type RowState = Array<{
-  letter: Word;
-  state: TileState;
-}>;
-export type GameUiInputModel = { guesses: BoardState; };
+export type GameUiInputModel = Pick<ServerGameModel, 'boardState' | 'evaluations'>;
