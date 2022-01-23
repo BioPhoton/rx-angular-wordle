@@ -4,7 +4,7 @@ import {
   Input,
   ViewEncapsulation,
 } from '@angular/core';
-import { TileState } from 'projects/movies/src/app/shared/game/game.model';
+import { TileState } from '../internal/game-ui-input.model'
 
 @Component({
   selector: 'ui-board-tile',

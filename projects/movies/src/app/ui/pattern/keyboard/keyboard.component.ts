@@ -1,18 +1,13 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  Output,
-} from '@angular/core';
-import { RxInputType } from '../../../shared/rxa-custom/input-type.typing';
-import { map, Subject } from 'rxjs';
-import { TileState, GameStateModel } from '../../../shared/game/game.model';
-import { coerceObservable } from '../../../shared/utils/coerceObservable';
+import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
+import { map, Observable, Subject } from 'rxjs';
+import { GameStateModel, TileState } from '../../../shared/game/game.model';
 import { RxState } from '@rx-angular/state';
+import { GameUiInputModel } from '../internal/game-ui-input.model';
+import { BoardTileModule } from '../board-tile/board-tile.module';
 
 type Key = {
-  value: string;
-  evaluation: TileState;
+  letter: string;
+  state: TileState;
 };
 
 type Keys = Key[];
@@ -64,46 +59,49 @@ interface KeyBoardState {
     </div>
   `,
   styleUrls: ['./keyboard.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class KeyboardComponent extends RxState<KeyBoardState> {
   key = new Subject<string>();
   keyRows$ = this.select('keyRows');
 
   @Input()
-  set boardState(_: RxInputType<GameStateModel>) {
-    this.connect('keyRows', coerceObservable(_).pipe(map(getKeyBoardState)));
+  set boardState(_: Observable<GameUiInputModel>) {
+    this.connect('keyRows', _.pipe(map(getKeyBoardState)));
   }
 
   @Output()
-  keyPress = this.key;
+  press = this.key;
+
 }
 
 const keyboardRow1 = 'qwertyuiop'.split('');
 const keyboardRow2 = 'asdfghhjkl'.split('');
 const keyboardRow3 = 'zxcvbnm'.split('');
 const keys = [...keyboardRow1, ...keyboardRow2, ...keyboardRow3];
+const ENTER: Tile = { letter: 'ENTER', state: 'empty' };
+const BACK = { letter: 'BACK', state: 'empty' as TileState };
 
 function getKeyBoardState({ guesses }: GameStateModel): Keys[] {
   const keysMap: Record<string, TileState> = keys.reduce(
     (map, value) => ({
       ...map,
-      [value]: 'empty',
+      [value]: 'empty'
     }),
     {}
   );
-  guesses.forEach((row) =>
-    row.forEach((tile) => {
+  guesses.forEach((row: string[]) =>
+    row.forEach((tile: Key) => {
       keysMap[tile.letter] = tile.state;
     })
   );
   const allKeys = Object.entries(keysMap).map(([value, evaluation]) => ({
     value,
-    evaluation,
+    evaluation
   }));
   return [
     allKeys.splice(0, keyboardRow1.length),
-    allKeys.splice(0, keyboardRow2.length - 1),
-    allKeys.splice(0, keyboardRow3.length),
+    [ENTER].concat(allKeys.splice(0, keyboardRow2.length)).concat(BACK),
+    allKeys.splice(0, keyboardRow3.length)
   ];
 }
