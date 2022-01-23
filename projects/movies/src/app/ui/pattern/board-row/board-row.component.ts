@@ -4,7 +4,7 @@ import {
   Input,
   ViewEncapsulation,
 } from '@angular/core';
-import { RowState } from '../../../shared/game/game.model';
+import { TileRow } from '../../../shared/game/game.model';
 
 @Component({
   selector: 'ui-board-row',
@@ -21,5 +21,5 @@ import { RowState } from '../../../shared/game/game.model';
 })
 export class BoardRowComponent {
   @Input()
-  public state: RowState | null = null;
+  public state: TileRow | null = null;
 }

@@ -3,7 +3,7 @@ import {
   Component,
   ViewEncapsulation,
 } from '@angular/core';
-import { RowState } from '../../../shared/game/game.model';
+import { TileRow } from '../../../shared/game/game.model';
 
 @Component({
   selector: 'app-instructions',
@@ -53,7 +53,7 @@ import { RowState } from '../../../shared/game/game.model';
   encapsulation: ViewEncapsulation.Emulated,
 })
 export class InstructionsComponent {
-  public correct: RowState = [
+  public correct: TileRow = [
     { letter: 'w', state: 'correct' },
     { letter: 'e', state: 'tbd' },
     { letter: 'a', state: 'tbd' },
@@ -61,7 +61,7 @@ export class InstructionsComponent {
     { letter: 'y', state: 'tbd' },
   ];
 
-  public present: RowState = [
+  public present: TileRow = [
     { letter: 'p', state: 'tbd' },
     { letter: 'i', state: 'present' },
     { letter: 'l', state: 'tbd' },
@@ -69,7 +69,7 @@ export class InstructionsComponent {
     { letter: 's', state: 'tbd' },
   ];
 
-  public absent: RowState = [
+  public absent: TileRow = [
     { letter: 'v', state: 'tbd' },
     { letter: 'a', state: 'tbd' },
     { letter: 'g', state: 'tbd' },
