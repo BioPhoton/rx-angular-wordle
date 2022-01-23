@@ -15,7 +15,7 @@ interface Actions {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GameState extends RxState<State> implements AppInitializer {
   private actions = getActions<Actions>();
@@ -30,27 +30,27 @@ export class GameState extends RxState<State> implements AppInitializer {
     this.set({
       game: {
         gameStatus: 'PENDING',
-        boardState: ['dream'],
-        evaluations: [['absent', 'correct', 'absent', 'present', 'absent']],
-        rowIndex: 1,
+        guesses: [
+          [
+            { letter: 'd', state: 'absent' },
+            { letter: 'r', state: 'correct' },
+            { letter: 'e', state: 'absent' },
+            { letter: 'a', state: 'present' },
+            { letter: 'm', state: 'absent' },
+          ],
+        ],
         lastCompletedTs: 0,
         lastPlayedTs: 0,
         restoringFromLocalStorage: 0,
-        solution: 'dream',
-        hardMode: 0
-      }
+        solution: 'treat',
+        hardMode: 0,
+      },
     });
 
-    this.connect(
-      'game',
-      this.actions.refreshGame$.pipe(
-        exhaustMap(getGame)
-      )
-    );
+    this.connect('game', this.actions.refreshGame$.pipe(exhaustMap(getGame)));
   }
 
   initialize(): void {
-    // initially fetch genres
     this.refreshGame();
   }
 }

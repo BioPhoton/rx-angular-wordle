@@ -7,7 +7,7 @@ header {
   border-bottom: 1px solid var(--color-tone-4);
 }
 
-header .title {
+.title {
   font-weight: 700;
   font-size: 36px;
   letter-spacing: 0.2rem;
@@ -20,7 +20,7 @@ header .title {
 }
 
 @media (max-width: 360px) {
-  header .title {
+  .title {
     font-size: 22px;
     letter-spacing: 0.1rem;
   }

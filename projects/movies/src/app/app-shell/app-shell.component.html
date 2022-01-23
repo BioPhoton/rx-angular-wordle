@@ -1,20 +1,34 @@
-<header>
+<ui-header>
   <div class="menu">
-      help
+    <button id="help-button" class="icon" aria-label="help" (click)="showInstructions()">
+      <ui-icon icon="help"></ui-icon>
+    </button>
   </div>
   <div class="title">
-    WORDLE
+    Wordle
   </div>
   <div class="menu">
-      statistics,
-      settings
+    <button id="statistics-button" class="icon" aria-label="statistics">
+      <ui-icon icon="statistics"></ui-icon>
+    </button>
+    <button id="settings-button" class="icon" aria-label="settings" (click)="showSettings()">
+      <ui-icon icon="settings"></ui-icon>
+    </button>
   </div>
-</header>
+</ui-header>
 
-<div id="board-container">
-  <ui-board [boardState]="gameState.game$">
-  </ui-board>
-</div>
+<ui-board [boardState]="gameState.game$"></ui-board>
 
-<ui-keyboard [boardState]="gameState.game$">
-</ui-keyboard>
+<ui-keyboard [boardState]="gameState.game$"></ui-keyboard>
+
+<ng-container *rxLet="showInstructions$; let showInstructions">
+  <ui-modal [open]="showInstructions" title="How to play" (hide)=hideInstructions()>
+    <app-instructions></app-instructions>
+  </ui-modal>
+</ng-container>
+
+<ng-container *rxLet="showSettings$; let showSettings">
+  <ui-modal [open]="showSettings" title="Settings" (hide)=hideSettings()>
+    <app-settings></app-settings>
+  </ui-modal>
+</ng-container>

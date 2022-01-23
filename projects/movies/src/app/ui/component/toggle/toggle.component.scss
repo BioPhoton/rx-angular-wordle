@@ -1,0 +1,25 @@
+:host {
+  display: block;
+  border-bottom: 1px solid var(--color-tone-4);
+  padding: 16px 0;
+}
+
+label {
+  cursor: default;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text {
+  padding-right: 8px;
+}
+
+.title {
+  font-size: 18px;
+}
+
+.description {
+  font-size: 12px;
+  color: var(--color-tone-2);
+}

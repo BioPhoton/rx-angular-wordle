@@ -18,6 +18,7 @@
   --keyboard-height: 200px;
   --game-max-width: 500px;
 }
+
 /* Light theme colors */
 :root {
   --color-tone-1: #1a1a1b;
@@ -29,8 +30,9 @@
   --color-tone-7: #ffffff;
   --opacity-50: rgba(255, 255, 255, 0.5);
 }
+
 /* Dark Theme Colors */
-.nightmode {
+.darkTheme {
   --color-tone-1: #d7dadc;
   --color-tone-2: #818384;
   --color-tone-3: #565758;
@@ -40,11 +42,13 @@
   --color-tone-7: #121213;
   --opacity-50: rgba(0, 0, 0, 0.5);
 }
+
 /* Constant colors and colors derived from theme */
 :root,
-.nightmode {
+.darkTheme {
   --color-background: var(--color-tone-7);
 }
+
 :root {
   --color-present: var(--yellow);
   --color-correct: var(--green);

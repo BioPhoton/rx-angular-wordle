@@ -1,11 +1,14 @@
-
 export type Word = string;
-export type Evaluation =  'absent' | 'present' | 'correct' | 'empty';
-export type GameStatus =  'PENDING' | 'WIN' | 'LOOSE';
+export type RowState = Array<{
+  letter: Word;
+  state: TileState;
+}>;
+export type BoardState = Array<RowState>;
+export type TileState = 'absent' | 'present' | 'correct' | 'empty' | 'tbd';
+export type GameStatus = 'PENDING' | 'WIN' | 'LOOSE';
+
 export interface GameStateModel {
-  boardState: Word[];
-  evaluations: Evaluation[][];
-  rowIndex: number;
+  guesses: BoardState;
   solution: Word;
   gameStatus: GameStatus;
   lastPlayedTs: number;
