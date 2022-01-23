@@ -73,8 +73,6 @@ const keyboardRow1 = 'qwertyuiop'.split('');
 const keyboardRow2 = 'asdfghhjkl'.split('');
 const keyboardRow3 = 'zxcvbnm'.split('');
 const keys = [...keyboardRow1, ...keyboardRow2, ...keyboardRow3];
-// const ENTER: LetterTile = { letter: 'ENTER', state: 'empty' };
-// const BACK: LetterTile = { letter: 'BACK', state: 'empty' };
 
 function getKeyBoardState({ boardState, evaluations }: GameUiInputModel): Keys[] {
   const keysMap: Record<string, LetterState> = keys.reduce(
