@@ -79,8 +79,6 @@
                   "with": "projects/movies/src/environments/environment.prod.ts"
                 }
               ],
-              "serviceWorker": true,
-              "ngswConfigPath": "projects/movies/src/ngsw-config.json",
               "outputHashing": "all"
             },
             "development": {
