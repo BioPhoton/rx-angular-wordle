@@ -2,13 +2,8 @@ import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core
 import { map, Observable, Subject } from 'rxjs';
 import { RxState } from '@rx-angular/state';
 import { GameUiInputModel } from '../internal/game-ui-input.model';
-import { LetterState, LetterTile } from '../internal/letter.model';
-
-type Keys = LetterTile[];
-
-interface KeyBoardState {
-  keyRows: Keys[];
-}
+import { KeyBoardModel } from './keyboard.model';
+import { getKeyBoardState } from './keyboard.transforms';
 
 @Component({
   selector: 'ui-keyboard',
@@ -37,7 +32,7 @@ interface KeyBoardState {
         <div class="spacer half"></div>
       </div>
       <div class="keyboard-row">
-        <button [attr.data-key]="'↵'" class="one-and-a-half">enter</button>
+        <button [attr.data-key]="'↵'" class="one-and-a-half" (click)="key.next('ENTER')">enter</button>
         <button
           [attr.data-key]="k.letter"
           [attr.data-state]="k.state"
@@ -46,7 +41,7 @@ interface KeyBoardState {
         >
           {{ k.letter }}
         </button>
-        <button [attr.data-key]="'←'" class="one-and-a-half">
+        <button [attr.data-key]="'←'" class="one-and-a-half" (click)="key.next('BACK')">
           <ui-icon icon="backspace"></ui-icon>
         </button>
       </div>
@@ -55,7 +50,7 @@ interface KeyBoardState {
   styleUrls: ['./keyboard.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class KeyboardComponent extends RxState<KeyBoardState> {
+export class KeyboardComponent extends RxState<KeyBoardModel> {
   key = new Subject<string>();
   keyRows$ = this.select('keyRows');
 
@@ -67,38 +62,4 @@ export class KeyboardComponent extends RxState<KeyBoardState> {
   @Output()
   press = this.key;
 
-}
-
-const keyboardRow1 = 'qwertyuiop'.split('');
-const keyboardRow2 = 'asdfghhjkl'.split('');
-const keyboardRow3 = 'zxcvbnm'.split('');
-const keys = [...keyboardRow1, ...keyboardRow2, ...keyboardRow3];
-
-function getKeyBoardState({ boardState, evaluations }: GameUiInputModel): Keys[] {
-  const keysMap: Record<string, LetterState> = keys.reduce(
-    (map, letter) => ({
-      ...map,
-      [letter]: 'empty'
-    }),
-    {}
-  );
-
-  evaluations.forEach((row, rowIdx) => {
-      row.forEach((state, letterIdx) => {
-        console.log(boardState[rowIdx][letterIdx], state);
-        keysMap[boardState[rowIdx][letterIdx]] = state;
-      });
-    }
-  );
-
-  const allKeys = Object.entries(keysMap).map(([letter, state]) => ({
-    letter,
-    state
-  }));
-
-  return [
-    allKeys.splice(0, keyboardRow1.length),
-    allKeys.splice(0, keyboardRow2.length),
-    allKeys.splice(0, keyboardRow3.length)
-  ];
 }

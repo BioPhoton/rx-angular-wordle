@@ -1,12 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RxState, selectSlice } from '@rx-angular/state';
 import { getGame } from '../shared/game-resource/game.resource';
-import { ServerGameModel } from '../shared/game-resource/server-game.model';
-import { filter, Subject, withLatestFrom } from 'rxjs';
-
-// the browser model includes the current try
-interface BrowserGameModel extends ServerGameModel {
-}
+import { filter, Subject } from 'rxjs';
+import { BrowserGameModel } from './browser-game-state/browser-game-state.model';
+import { addCharacter, removeCharacter } from './browser-game-state/browser-game-state.transforms';
 
 @Component({
   selector: 'app-shell',
@@ -18,6 +15,7 @@ export class AppShellComponent extends RxState<{
   showInstructions: boolean;
   showSettings: boolean;
 } & BrowserGameModel> {
+
   public uiInput$ = this.select(selectSlice(['boardState', 'evaluations']));
   public keyboardOutput$ = new Subject<string>();
   public back$ = this.keyboardOutput$.pipe(filter(k => k === 'BACK'));
@@ -32,36 +30,20 @@ export class AppShellComponent extends RxState<{
   constructor() {
     super();
     this.set({ showInstructions: false, showSettings: false });
+    // fetch and set server state once
     this.connect(getGame());
-    this.character$.pipe(
-      withLatestFrom()
-    );
 
     this.connect(
       'boardState',
       this.character$,
-      (({ boardState, rowIndex }, char) => {
-        const wordIndex: number = rowIndex - 1;
-        const currentWord: string = boardState[wordIndex] || '';
-        console.log('character$: ', char, currentWord, rowIndex, boardState);
-        if (currentWord.length < 5) {
-          boardState[wordIndex] = currentWord + char;
-        }
-        console.log('new : ', char, boardState, rowIndex);
-        return [...boardState];
-      }));
+      (({ boardState, rowIndex }, char) => addCharacter(boardState, rowIndex, char))
+    );
 
     this.connect(
       'boardState',
       this.back$,
-      (({ boardState, rowIndex }, char) => {
-        console.log('back$: ', char);
-        const currentWord: string = boardState[rowIndex] || '';
-        if (currentWord.length > 0) {
-          boardState[rowIndex] = currentWord.slice(-1);
-        }
-        return boardState;
-      }));
+      (({ boardState, rowIndex }) => removeCharacter(boardState, rowIndex))
+    );
 
     this.hold(this.enter$, () => console.log('server post'));
   }
