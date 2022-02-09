@@ -4,7 +4,7 @@ import {
   Input,
   ViewEncapsulation,
 } from '@angular/core';
-import { TileState } from 'projects/movies/src/app/shared/game/game.model';
+import { LetterState } from '../../internal/letter.model'
 
 @Component({
   selector: 'ui-board-tile',
@@ -17,5 +17,5 @@ import { TileState } from 'projects/movies/src/app/shared/game/game.model';
 })
 export class BoardTileComponent {
   @Input()
-  public state: TileState = 'empty';
+  public state: LetterState = 'empty';
 }

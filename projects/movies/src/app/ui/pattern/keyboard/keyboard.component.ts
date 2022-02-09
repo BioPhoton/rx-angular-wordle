@@ -1,25 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  Output,
-} from '@angular/core';
-import { RxInputType } from '../../../shared/rxa-custom/input-type.typing';
-import { map, Subject } from 'rxjs';
-import { TileState, GameStateModel } from '../../../shared/game/game.model';
-import { coerceObservable } from '../../../shared/utils/coerceObservable';
+import { ChangeDetectionStrategy, Component, Input, Output } from '@angular/core';
+import { map, Observable, Subject } from 'rxjs';
 import { RxState } from '@rx-angular/state';
-
-type Key = {
-  value: string;
-  evaluation: TileState;
-};
-
-type Keys = Key[];
-
-interface KeyBoardState {
-  keyRows: Keys[];
-}
+import { GameUiInputModel } from '../internal/game-ui-input.model';
+import { KeyBoardModel } from './keyboard.model';
+import { getKeyBoardState } from './keyboard.transforms';
 
 @Component({
   selector: 'ui-keyboard',
@@ -27,83 +11,55 @@ interface KeyBoardState {
     <div id="keyboard" *rxLet="keyRows$; let keyRows">
       <div class="keyboard-row">
         <button
-          [attr.data-key]="k.value"
-          [attr.data-state]="k.evaluation"
+          [attr.data-key]="k.state"
+          [attr.data-state]="k.state"
           *ngFor="let k of keyRows[0]"
-          (click)="key.next(k.value)"
+          (click)="key.next(k.letter)"
         >
-          {{ k.value }}
+          {{ k.letter }}
         </button>
       </div>
       <div class="keyboard-row">
         <div class="spacer half"></div>
         <button
-          [attr.data-key]="k.value"
-          [attr.data-state]="k.evaluation"
+          [attr.data-key]="k.letter"
+          [attr.data-state]="k.state"
           *ngFor="let k of keyRows[1]"
-          (click)="key.next(k.value)"
+          (click)="key.next(k.state)"
         >
-          {{ k.value }}
+          {{ k.letter }}
         </button>
         <div class="spacer half"></div>
       </div>
       <div class="keyboard-row">
-        <button [attr.data-key]="'↵'" class="one-and-a-half">enter</button>
+        <button [attr.data-key]="'↵'" class="one-and-a-half" (click)="key.next('ENTER')">enter</button>
         <button
-          [attr.data-key]="k.value"
-          [attr.data-state]="k.evaluation"
+          [attr.data-key]="k.letter"
+          [attr.data-state]="k.state"
           *ngFor="let k of keyRows[2]"
-          (click)="key.next(k.value)"
+          (click)="key.next(k.letter)"
         >
-          {{ k.value }}
+          {{ k.letter }}
         </button>
-        <button [attr.data-key]="'←'" class="one-and-a-half">
+        <button [attr.data-key]="'←'" class="one-and-a-half" (click)="key.next('BACK')">
           <ui-icon icon="backspace"></ui-icon>
         </button>
       </div>
     </div>
   `,
   styleUrls: ['./keyboard.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class KeyboardComponent extends RxState<KeyBoardState> {
+export class KeyboardComponent extends RxState<KeyBoardModel> {
   key = new Subject<string>();
   keyRows$ = this.select('keyRows');
 
   @Input()
-  set boardState(_: RxInputType<GameStateModel>) {
-    this.connect('keyRows', coerceObservable(_).pipe(map(getKeyBoardState)));
+  set boardState(_: Observable<GameUiInputModel>) {
+    this.connect('keyRows', _.pipe(map(getKeyBoardState)));
   }
 
   @Output()
-  keyPress = this.key;
-}
+  press = this.key;
 
-const keyboardRow1 = 'qwertyuiop'.split('');
-const keyboardRow2 = 'asdfghhjkl'.split('');
-const keyboardRow3 = 'zxcvbnm'.split('');
-const keys = [...keyboardRow1, ...keyboardRow2, ...keyboardRow3];
-
-function getKeyBoardState({ guesses }: GameStateModel): Keys[] {
-  const keysMap: Record<string, TileState> = keys.reduce(
-    (map, value) => ({
-      ...map,
-      [value]: 'empty',
-    }),
-    {}
-  );
-  guesses.forEach((row) =>
-    row.forEach((tile) => {
-      keysMap[tile.letter] = tile.state;
-    })
-  );
-  const allKeys = Object.entries(keysMap).map(([value, evaluation]) => ({
-    value,
-    evaluation,
-  }));
-  return [
-    allKeys.splice(0, keyboardRow1.length),
-    allKeys.splice(0, keyboardRow2.length - 1),
-    allKeys.splice(0, keyboardRow3.length),
-  ];
 }

@@ -1,2 +1,1 @@
 # rx-angular-wordle
-

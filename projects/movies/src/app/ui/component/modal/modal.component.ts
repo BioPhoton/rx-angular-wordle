@@ -29,6 +29,7 @@ import {
   encapsulation: ViewEncapsulation.Emulated,
 })
 export class ModalComponent {
+
   @Input()
   public title: string = '';
 

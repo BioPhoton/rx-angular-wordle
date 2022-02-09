@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BoardRowComponent } from './board-row.component';
-import { RxForModule } from '../../../shared/rxa-custom/rx-for/rx-for.module';
+import { ForModule } from '@rx-angular/template/experimental/for';
 import { BoardTileModule } from '../board-tile/board-tile.module';
 
 @NgModule({
   declarations: [BoardRowComponent],
-  imports: [CommonModule, RxForModule, BoardTileModule],
+  imports: [CommonModule, ForModule, BoardTileModule],
   exports: [BoardRowComponent],
 })
 export class BoardRowModule {}

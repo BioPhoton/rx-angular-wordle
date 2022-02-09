@@ -1,8 +1,7 @@
 import { Directive, Input, Type, ViewContainerRef } from '@angular/core';
-import { RxInputType } from '../../rxa-custom/input-type.typing';
 import { RxState } from '@rx-angular/state';
 import { coerceObservable } from '../../utils/coerceObservable';
-import { distinctUntilChanged } from 'rxjs';
+import { distinctUntilChanged, Observable } from 'rxjs';
 
 /**
  * @example
@@ -26,13 +25,13 @@ import { distinctUntilChanged } from 'rxjs';
  * import('./any-component.lazy.ts').then(c => c.component)
  */
 @Directive({
-  selector: '[lazy]',
+  selector: '[lazy]'
 })
 export class LazyDirective extends RxState<{
   component: Type<any>;
 }> {
   @Input()
-  set lazy(component: RxInputType<Type<any>>) {
+  set lazy(component: Observable<Type<any>>) {
     this.connect('component', coerceObservable(component));
   }
 

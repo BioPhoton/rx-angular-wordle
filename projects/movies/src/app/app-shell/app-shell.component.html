@@ -17,9 +17,13 @@
   </div>
 </ui-header>
 
-<ui-board [boardState]="gameState.game$"></ui-board>
+<div id="board-container">
+  <ui-board [boardState]="uiInput$">
+  </ui-board>
+</div>
 
-<ui-keyboard [boardState]="gameState.game$"></ui-keyboard>
+<ui-keyboard [boardState]="uiInput$" (press)="keyboardOutput$.next($event)">
+</ui-keyboard>
 
 <ng-container *rxLet="showInstructions$; let showInstructions">
   <ui-modal [open]="showInstructions" title="How to play" (hide)=hideInstructions()>

@@ -1,10 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  Input,
-  ViewEncapsulation,
-} from '@angular/core';
-import { TileRow } from '../../../shared/game/game.model';
+import { ChangeDetectionStrategy, Component, Input, ViewEncapsulation } from '@angular/core';
+import { RowState } from '../board.model';
 
 @Component({
   selector: 'ui-board-row',
@@ -12,14 +7,15 @@ import { TileRow } from '../../../shared/game/game.model';
     <ng-container *ngIf="state">
       <ui-board-tile *ngFor="let tile of state" [state]="tile.state">
         {{ tile.letter }}
-      </ui-board-tile></ng-container
+      </ui-board-tile>
+    </ng-container
     >
   `,
   styleUrls: ['board-row.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.Emulated,
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class BoardRowComponent {
   @Input()
-  public state: TileRow | null = null;
+  public state: RowState | null = null;
 }

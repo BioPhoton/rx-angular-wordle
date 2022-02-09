@@ -1,13 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { RxInputType } from '../../../shared/rxa-custom/input-type.typing';
-import { GameStateModel, BoardState } from '../../../shared/game/game.model';
 import { RxState } from '@rx-angular/state';
-import { coerceObservable } from '../../../shared/utils/coerceObservable';
-import { map } from 'rxjs';
-
-interface BoardModel {
-  board: BoardState;
-}
+import { map, Observable } from 'rxjs';
+import { GameUiInputModel } from '../internal/game-ui-input.model';
+import { getBoard, maxTry } from './board.transforms';
+import { BoardModel } from './board.model';
 
 @Component({
   selector: 'ui-board',
@@ -18,34 +14,21 @@ interface BoardModel {
   `,
   styleUrls: ['./board.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [RxState],
+  providers: [RxState]
 })
 export class BoardComponent {
   board$ = this.s.select('board');
 
   @Input()
-  public nGuesses: number = 6;
+  public nGuesses: number = maxTry;
 
   @Input()
-  set boardState(_: RxInputType<GameStateModel>) {
-    this.s.connect('board', coerceObservable(_).pipe(map(getBoard)));
+  set boardState(_: Observable<GameUiInputModel>) {
+    this.s.connect('board', _.pipe(map(getBoard)));
   }
 
   constructor(private s: RxState<BoardModel>) {
-    this.s.set({ board: getBoard({ guesses: [] }) });
+    this.s.set({ board: getBoard({ boardState: [], evaluations: [] }) });
   }
-}
 
-function getBoard({ guesses }: Pick<GameStateModel, 'guesses'>): BoardState {
-  const board = [...guesses];
-  while (board.length < 6) {
-    board.push([
-      { letter: '', state: 'empty' },
-      { letter: '', state: 'empty' },
-      { letter: '', state: 'empty' },
-      { letter: '', state: 'empty' },
-      { letter: '', state: 'empty' },
-    ]);
-  }
-  return board;
 }
