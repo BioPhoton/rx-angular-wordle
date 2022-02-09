@@ -122,12 +122,12 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:karma",
+          "builder": "@angular-builders/jest:run",
           "options": {
             "main": "projects/movies/src/test.ts",
             "polyfills": "projects/movies/src/polyfills.ts",
             "tsConfig": "projects/movies/tsconfig.spec.json",
-            "karmaConfig": "projects/movies/karma.conf.js",
+            "configPath": "projects/movies/jest.config.js",
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/movies/src/favicon.ico",

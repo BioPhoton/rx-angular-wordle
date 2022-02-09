@@ -4,9 +4,6 @@ export function addCharacter(boardState: Word[], rowIndex: number, char: string)
   const wordIdx: number = rowIndex - 1;
   const currentWord: Word = boardState[wordIdx] !== undefined ? boardState[wordIdx] : '';
 
-  if (boardState.findIndex(str => str.length >= 5) !== rowIndex) {
-    throw new Error('`rowIndex` and state are in an inconsistent state.')
-  }
   if (currentWord.length < 5) {
     boardState[wordIdx] = currentWord + char;
   }

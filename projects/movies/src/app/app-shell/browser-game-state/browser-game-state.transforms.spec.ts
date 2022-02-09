@@ -18,34 +18,55 @@ const gameWord2: Pick<BrowserGameModel, 'boardState' | 'rowIndex'> = {
   rowIndex: 3
 };
 
+const gameWord4: Pick<BrowserGameModel, 'boardState' | 'rowIndex'> = {
+  boardState: ['teams', 'trace', 'drea'],
+  rowIndex: 3
+};
+
 const lastKey = 'm';
 const gameWord5: Pick<BrowserGameModel, 'boardState' | 'rowIndex'> = {
   boardState: ['teams', 'trace', 'dream'],
   rowIndex: 3
 };
 
-
 describe('browser-game-state.transforms', () => {
   describe('addCharacter', () => {
-    it('should remove a word if the last character is removed', () => {
+    it('should add a word if the first character is added', () => {
+      const wordIdx = gameWordEmpty.rowIndex - 1;
       const newState: Word[] = addCharacter(gameWordEmpty.boardState, gameWordEmpty.rowIndex, firstKey);
-      expect(newState[gameWordEmpty.rowIndex]).toBe(gameWord1.boardState[gameWordEmpty.rowIndex]);
+      expect(newState[wordIdx]).toBe(gameWord1.boardState[wordIdx]);
     });
     it('should add a char to a 1 char string', () => {
-      const newState: Word[] = addCharacter(gameWord1.boardState, gameWord1.rowIndex, secondKey);
-      expect(newState[gameWord1.rowIndex]).toBe(gameWord2.boardState[gameWord1.rowIndex]);
+      const rowIndex = gameWord1.rowIndex;
+      const newState: Word[] = addCharacter(gameWord1.boardState, rowIndex, secondKey);
+      expect(newState[rowIndex]).toBe(gameWord2.boardState[rowIndex]);
     });
 
     it('should not add a character to a 5 char string', () => {
+      const rowIndex = gameWord5.rowIndex - 1;
       const newState: Word[] = addCharacter(gameWord5.boardState, gameWord5.rowIndex, lastKey);
-      expect(newState).toBe(gameWord5.boardState[gameWord5.rowIndex - 1]);
+      expect(newState[rowIndex]).toBe(gameWord5.boardState[rowIndex]);
     });
-    // pending word on x + rowIndex !== x (any state where a word with length !== 5 is not the rowIndex)
-    it('should throw if rowindex is incorrect', () => {
-      expect(() => addCharacter(gameWord2.boardState, 4, lastKey)).toThrowError('`rowIndex` and state are in an inconsistent state.');
-    });
+
   });
   describe('removeCharacter', () => {
-    removeCharacter
+    it('should not remove a character from a 5 char string', () => {
+      const rowIndex = gameWord4.rowIndex - 1;
+      const newState: Word[] = removeCharacter(gameWord5.boardState, gameWord4.rowIndex);
+      expect(newState[rowIndex]).toBe(gameWord4.boardState[rowIndex]);
+    });
+
+    it('should remove a word if the last character is removed', () => {
+      const rowIndex = gameWord1.rowIndex - 1;
+      const newState: Word[] = removeCharacter(gameWord1.boardState, gameWord1.rowIndex);
+      expect(newState[rowIndex]).toBe(gameWordEmpty.boardState[rowIndex]);
+    });
+
+    it('should do nothing if a character is removed from an empty word', () => {
+      const rowIndex = gameWordEmpty.rowIndex - 1;
+      const newState: Word[] = removeCharacter(gameWordEmpty.boardState, gameWordEmpty.rowIndex);
+      expect(newState[rowIndex]).toBe(gameWordEmpty.boardState[rowIndex]);
+    });
+
   });
 });

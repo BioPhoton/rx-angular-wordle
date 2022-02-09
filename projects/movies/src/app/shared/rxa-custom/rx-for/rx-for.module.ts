@@ -6,5 +6,5 @@ import { RxForDirective } from './rx-for.directive';
   declarations: [RxForDirective],
   exports: [RxForDirective]
 })
-export class RxForModule {
+export class ForModule {
 }
