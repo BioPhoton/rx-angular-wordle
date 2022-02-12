@@ -11,6 +11,8 @@ import { BoardModule } from '../ui/pattern/board/board.module';
 import { HeaderModule } from '../ui/component/header/header.module';
 import { IconModule } from '../ui/component/icon/icon.module';
 import { ModalModule } from '../ui/component/modal/modal.module';
+import { ClientSolutionService } from './solution.service';
+import { SolutionService } from '../solution';
 
 @NgModule({
   declarations: [AppShellComponent],
@@ -28,5 +30,6 @@ import { ModalModule } from '../ui/component/modal/modal.module';
     BoardModule,
   ],
   exports: [AppShellComponent],
+  providers: [{ provide: SolutionService, useClass: ClientSolutionService }],
 })
 export class AppShellModule {}

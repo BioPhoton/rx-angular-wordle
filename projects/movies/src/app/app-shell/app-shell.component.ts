@@ -3,46 +3,54 @@ import { RxState, selectSlice } from '@rx-angular/state';
 import { getGame } from '../shared/game-resource/game.resource';
 import { filter, Subject } from 'rxjs';
 import { BrowserGameModel } from './browser-game-state/browser-game-state.model';
-import { addCharacter, removeCharacter } from './browser-game-state/browser-game-state.transforms';
+import {
+  addCharacter,
+  removeCharacter,
+} from './browser-game-state/browser-game-state.transforms';
+import { SolutionService } from '../solution';
 
 @Component({
   selector: 'app-shell',
   templateUrl: './app-shell.component.html',
   styleUrls: ['./app-shell.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppShellComponent extends RxState<{
-  showInstructions: boolean;
-  showSettings: boolean;
-} & BrowserGameModel> {
-
+export class AppShellComponent extends RxState<
+  {
+    showInstructions: boolean;
+    showSettings: boolean;
+  } & BrowserGameModel
+> {
   public uiInput$ = this.select(selectSlice(['boardState', 'evaluations']));
   public keyboardOutput$ = new Subject<string>();
-  public back$ = this.keyboardOutput$.pipe(filter(k => k === 'BACK'));
-  public enter$ = this.keyboardOutput$.pipe(filter(k => k === 'ENTER'));
-  public character$ = this.keyboardOutput$.pipe(filter(k => k !== 'BACK' && k !== 'ENTER'));
+  public back$ = this.keyboardOutput$.pipe(filter((k) => k === 'BACK'));
+  public enter$ = this.keyboardOutput$.pipe(filter((k) => k === 'ENTER'));
+  public character$ = this.keyboardOutput$.pipe(
+    filter((k) => k !== 'BACK' && k !== 'ENTER')
+  );
 
   public rowIndex$ = this.select('rowIndex');
 
   public showInstructions$ = this.select('showInstructions');
   public showSettings$ = this.select('showSettings');
 
-  constructor() {
+  constructor(solutionService: SolutionService) {
     super();
     this.set({ showInstructions: false, showSettings: false });
     // fetch and set server state once
     this.connect(getGame());
 
-    this.connect(
-      'boardState',
-      this.character$,
-      (({ boardState, rowIndex }, char) => addCharacter(boardState, rowIndex, char))
-    );
+    console.log(solutionService.getSolution());
 
     this.connect(
       'boardState',
-      this.back$,
-      (({ boardState, rowIndex }) => removeCharacter(boardState, rowIndex))
+      this.character$,
+      ({ boardState, rowIndex }, char) =>
+        addCharacter(boardState, rowIndex, char)
+    );
+
+    this.connect('boardState', this.back$, ({ boardState, rowIndex }) =>
+      removeCharacter(boardState, rowIndex)
     );
 
     this.hold(this.enter$, () => console.log('server post'));
@@ -64,4 +72,3 @@ export class AppShellComponent extends RxState<{
     this.set({ showSettings: false });
   }
 }
-
