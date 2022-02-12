@@ -1,6 +1,9 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import {
+  BrowserModule,
+  BrowserTransferStateModule,
+} from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { AppShellModule } from './app-shell/app-shell.module';
 import { SCHEDULED_APP_INITIALIZER_PROVIDER } from './shared/app-initializer/chunk-app-initializer.provider';
@@ -10,7 +13,8 @@ import { RootInjectorShortcutModule } from './shared/injector/root-injector.modu
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'rx-ng-wordle' }),
+    BrowserTransferStateModule,
     HttpClientModule,
     /**
      * **🚀 Perf Tip for TBT, LCP:**
@@ -21,7 +25,7 @@ import { RootInjectorShortcutModule } from './shared/injector/root-injector.modu
      * You have to import this module in the root module of your application to initialize the "hack"
      */
     RootInjectorShortcutModule,
-    AppShellModule
+    AppShellModule,
   ],
   providers: [
     /**
@@ -35,9 +39,8 @@ import { RootInjectorShortcutModule } from './shared/injector/root-injector.modu
      *
      * Configure RxAngular to get maximum performance.
      */
-    RXA_PROVIDER
+    RXA_PROVIDER,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule {
-}
+export class AppModule {}
